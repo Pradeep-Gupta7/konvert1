@@ -1,0 +1,22 @@
+{
+  "name": "konvert-server",
+  "version": "1.0.0",
+  "description": "Konvert PDF Toolkit — Express.js Backend",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "dependencies": {
+    "archiver": "^7.0.1",
+    "cors": "^2.8.5",
+    "docx": "^9.6.1",
+    "express": "^4.21.0",
+    "multer": "^1.4.5-lts.1",
+    "node-cron": "^3.0.3",
+    "pdf-lib": "^1.17.1",
+    "pdf-parse": "^1.1.1",
+    "sharp": "^0.33.5",
+    "uuid": "^10.0.0"
+  }
+}
