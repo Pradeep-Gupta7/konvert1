@@ -1,0 +1,39 @@
+/* ====== SubPage — light theme ====== */
+
+.sub-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 24px 40px;
+}
+
+.sub-page h2 {
+  font-size: 1.8rem;
+  font-weight: 800;
+  margin: 0 0 8px;
+  color: var(--text);
+}
+
+.sub-page-accent {
+  color: var(--accent);
+}
+
+.sub-page-desc {
+  color: var(--text-muted);
+  font-size: 1rem;
+  margin: 0 0 28px;
+  max-width: 600px;
+  line-height: 1.6;
+}
+
+.sub-page-desc code {
+  background: rgba(226, 81, 74, 0.08);
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 0.88rem;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.sub-page-card {
+  max-width: 420px;
+}

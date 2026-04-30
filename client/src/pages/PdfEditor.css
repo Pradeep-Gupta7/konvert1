@@ -1,0 +1,494 @@
+/* ====== PDF Editor — Sejda-style ====== */
+
+.pdf-editor-page {
+  flex: 1; display: flex; flex-direction: column;
+  min-height: calc(100vh - 60px); background: #dce6f0;
+}
+
+/* ── Upload Zone ── */
+.editor-upload-zone {
+  flex: 1; display: flex; align-items: center; justify-content: center; padding: 60px 24px;
+}
+.upload-inner {
+  text-align: center; padding: 60px 48px; border: 2px dashed #ddd;
+  border-radius: 16px; max-width: 480px; cursor: pointer;
+  transition: all 0.3s ease; background: #ffffff;
+}
+.upload-inner:hover {
+  border-color: var(--accent); background: #fffaf9;
+  transform: translateY(-2px); box-shadow: 0 8px 24px rgba(226,81,74,0.08);
+}
+.upload-icon { width: 64px; height: 64px; margin-bottom: 20px; }
+.upload-inner h2 { font-size: 1.5rem; font-weight: 800; color: var(--text); margin-bottom: 8px; }
+.upload-inner p { font-size: 0.92rem; color: var(--text-muted); margin-bottom: 24px; line-height: 1.5; }
+.upload-btn {
+  background: var(--accent); color: #fff; border: none; border-radius: 8px;
+  padding: 12px 32px; font-weight: 700; font-size: 0.95rem; cursor: pointer;
+  transition: all 0.2s ease;
+}
+.upload-btn:hover { filter: brightness(0.92); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(226,81,74,0.25); }
+
+/* ── Editor Container ── */
+.editor-container { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
+
+/* ── Top Toolbar (Sejda-style pill bar) ── */
+.editor-toolbar {
+  display: flex; align-items: center; justify-content: center; gap: 0;
+  background: #fff; border-bottom: 1px solid #d0d8e0;
+  padding: 10px 16px; min-height: 52px; flex-shrink: 0; z-index: 100;
+}
+.toolbar-pill {
+  display: flex; align-items: center; border: 1.5px solid #3b82c4;
+  border-radius: 6px; overflow: hidden; margin: 0;
+}
+.toolbar-pill .tool-btn { border-radius: 0; border: none; border-right: 1px solid #c8ddf0; }
+.toolbar-pill .tool-btn:last-child { border-right: none; }
+
+.tool-btn {
+  display: flex; align-items: center; gap: 5px;
+  padding: 7px 14px; border: 1.5px solid #3b82c4; border-radius: 6px;
+  background: #fff; color: #2570b5; font-size: 0.82rem;
+  font-weight: 600; cursor: pointer; transition: all 0.15s ease;
+  white-space: nowrap; font-family: inherit; margin: 0 2px;
+}
+.tool-btn:hover { background: #e8f2fc; }
+.tool-btn.active { background: #2570b5; color: #fff; }
+.tool-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+.toolbar-pill .tool-btn.has-dropdown::after {
+  content: '▾'; margin-left: 2px; font-size: 0.7rem;
+}
+
+/* ── Page Controls Bar ── */
+.page-controls-bar {
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+  background: #f0f4f8; border-bottom: 1px solid #d0d8e0;
+  padding: 6px 16px; flex-shrink: 0;
+}
+.page-num { font-size: 0.85rem; font-weight: 700; color: var(--text); }
+.page-ctrl-btn {
+  width: 30px; height: 30px; border: 1px solid #ccc; border-radius: 4px;
+  background: #fff; cursor: pointer; display: flex; align-items: center;
+  justify-content: center; font-size: 1rem; color: var(--text); transition: all 0.15s;
+}
+.page-ctrl-btn:hover { background: #e8f2fc; border-color: #2570b5; }
+.page-ctrl-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.page-ctrl-divider { width: 1px; height: 20px; background: #ccc; }
+
+/* ── Editor Body ── */
+.editor-body { flex: 1; display: flex; overflow: hidden; position: relative; }
+
+/* ── Thumbnails Panel ── */
+.thumb-panel {
+  width: 100px; min-width: 100px; background: #e4eaf0;
+  border-right: 1px solid #cdd5de; overflow-y: auto;
+  padding: 10px 6px; display: flex; flex-direction: column; gap: 8px;
+}
+.thumb-item {
+  cursor: pointer; border: 2px solid transparent; border-radius: 3px;
+  overflow: hidden; transition: border-color 0.15s; position: relative; background: #fff;
+}
+.thumb-item:hover { border-color: #999; }
+.thumb-item.active { border-color: #2570b5; box-shadow: 0 0 0 1px #2570b5; }
+.thumb-item img { width: 100%; display: block; }
+.thumb-label {
+  position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%);
+  font-size: 0.62rem; font-weight: 700; color: #fff;
+  background: rgba(0,0,0,0.5); padding: 1px 5px; border-radius: 2px;
+}
+
+/* ── Canvas Area ── */
+.editor-canvas-area {
+  flex: 1; overflow: auto; display: flex; justify-content: center;
+  align-items: flex-start; padding: 32px 24px 100px;
+  background: #dce6f0;
+}
+.canvas-wrapper {
+  position: relative; flex-shrink: 0; background: #fff;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.15); transform-origin: top center;
+}
+.canvas-wrapper.crosshair { cursor: crosshair; }
+.page-image { display: block; user-select: none; pointer-events: none; }
+
+/* ═══════════════════════════════════════════════════════
+   Floating Contextual Toolbar (Sejda-style — key feature)
+   ═══════════════════════════════════════════════════════ */
+
+.ft-bar {
+  position: absolute;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  background: #fff;
+  border: 1.5px solid #c0cdd8;
+  border-radius: 8px;
+  padding: 4px 6px;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.14), 0 1px 4px rgba(0,0,0,0.08);
+  pointer-events: all;
+  height: 40px;
+  animation: ftFadeIn 0.15s ease;
+}
+
+@keyframes ftFadeIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(6px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+.ft-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 5px;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #444;
+  font-size: 0.85rem;
+  font-weight: 700;
+  transition: all 0.12s;
+  font-family: inherit;
+}
+
+.ft-btn:hover {
+  background: #f0f4f8;
+  color: #222;
+}
+
+.ft-btn.on {
+  background: #2570b5;
+  color: #fff;
+  box-shadow: 0 1px 3px rgba(37,112,181,0.3);
+}
+
+.ft-sep {
+  width: 1px;
+  height: 24px;
+  background: #dde3ea;
+  margin: 0 3px;
+  flex-shrink: 0;
+}
+
+.ft-size-wrap,
+.ft-aa-wrap {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 0 5px;
+  height: 32px;
+  border-radius: 5px;
+  border: 1px solid transparent;
+  transition: all 0.12s;
+  cursor: pointer;
+}
+
+.ft-size-wrap:hover,
+.ft-aa-wrap:hover {
+  background: #f5f8fb;
+  border-color: #d0d8e0;
+}
+
+.ft-sz-icon {
+  width: 16px;
+  height: 16px;
+  color: #666;
+}
+
+.ft-aa-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #555;
+}
+
+.ft-select-sm {
+  border: none;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 600;
+  color: #333;
+  cursor: pointer;
+  padding: 2px;
+  outline: none;
+  max-width: 60px;
+}
+
+.ft-font-select {
+  max-width: 120px;
+}
+
+.ft-color-wrap {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: all 0.12s;
+}
+
+.ft-color-wrap:hover {
+  background: #f0f4f8;
+}
+
+.ft-color-input {
+  opacity: 0;
+  position: absolute;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.ft-del:hover {
+  background: #fef2f2 !important;
+  color: #dc2626 !important;
+}
+
+/* ── Link popover ── */
+.ft-link-popover {
+  position: absolute;
+  z-index: 1001;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #fff;
+  border: 1.5px solid #c0cdd8;
+  border-radius: 8px;
+  padding: 6px 8px;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.14);
+  animation: ftFadeIn 0.15s ease;
+}
+
+.ft-link-input {
+  width: 220px;
+  height: 30px;
+  border: 1px solid #d0d8e0;
+  border-radius: 5px;
+  padding: 0 10px;
+  font-size: 0.8rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.ft-link-input:focus {
+  border-color: #2570b5;
+  box-shadow: 0 0 0 2px rgba(37,112,181,0.1);
+}
+
+.ft-link-save {
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 5px;
+  background: #2570b5;
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.12s;
+}
+
+.ft-link-save:hover {
+  background: #1d5fa0;
+}
+
+.ft-link-remove {
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 5px;
+  background: #fef2f2;
+  color: #dc2626;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.12s;
+}
+
+.ft-link-remove:hover {
+  background: #fee2e2;
+}
+
+/* ═══════════════════════════════════════════════════════
+   Smart Alignment Guides (Sejda-style snap lines)
+   ═══════════════════════════════════════════════════════ */
+
+.align-guide {
+  position: absolute;
+  z-index: 900;
+  pointer-events: none;
+}
+
+.align-guide.vertical {
+  width: 1px;
+  border-left: 1.5px dashed #e8b400;
+  box-shadow: 0 0 4px rgba(232, 180, 0, 0.5);
+}
+
+.align-guide.horizontal {
+  height: 1px;
+  border-top: 1.5px dashed #e8b400;
+  box-shadow: 0 0 4px rgba(232, 180, 0, 0.5);
+}
+
+/* ── Overlay Elements ── */
+.el-overlay {
+  position: absolute; box-sizing: border-box; cursor: move;
+}
+.el-overlay:hover { outline: 2px solid rgba(37,112,181,0.4); }
+.el-overlay.selected { outline: 2px solid #2570b5; }
+
+.el-overlay .el-text-area {
+  width: 100%; height: 100%; min-height: 100%; border: none; background: transparent;
+  resize: none; outline: none; padding: 2px 4px; line-height: 1.3;
+  cursor: text; overflow: hidden; font-family: inherit;
+}
+.el-overlay .el-img { width: 100%; height: 100%; object-fit: fill; display: block; pointer-events: none; }
+
+.el-shape-inner { width: 100%; height: 100%; box-sizing: border-box; }
+.el-shape-inner.ellipse { border-radius: 50%; }
+
+/* Link indicator badge */
+.el-link-indicator {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 20px;
+  height: 20px;
+  font-size: 10px;
+  background: #2570b5;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  text-decoration: none;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.el-link-indicator:hover {
+  transform: scale(1.15);
+}
+
+/* Resize handles */
+.el-resize {
+  position: absolute; width: 8px; height: 8px;
+  background: #2570b5; border: 1px solid #fff; border-radius: 1px; z-index: 20;
+}
+.el-resize.se { right: -4px; bottom: -4px; cursor: nwse-resize; }
+.el-resize.ne { right: -4px; top: -4px; cursor: nesw-resize; }
+.el-resize.sw { left: -4px; bottom: -4px; cursor: nesw-resize; }
+.el-resize.nw { left: -4px; top: -4px; cursor: nwse-resize; }
+.el-resize.n { top: -4px; left: 50%; transform: translateX(-50%); cursor: ns-resize; }
+.el-resize.s { bottom: -4px; left: 50%; transform: translateX(-50%); cursor: ns-resize; }
+.el-resize.e { right: -4px; top: 50%; transform: translateY(-50%); cursor: ew-resize; }
+.el-resize.w { left: -4px; top: 50%; transform: translateY(-50%); cursor: ew-resize; }
+
+/* Draw preview */
+.draw-preview {
+  position: absolute; border: 2px dashed #2570b5;
+  background: rgba(37,112,181,0.06); pointer-events: none; z-index: 30;
+}
+.draw-preview.whiteout { background: rgba(255,255,255,0.85); border-color: #aaa; }
+.draw-preview.highlight { background: rgba(255,255,0,0.25); border: none; }
+.draw-preview.strikethrough { background: rgba(255,0,0,0.5); border: none; }
+.draw-preview.ellipse-preview { border-radius: 50%; }
+
+/* ── Bottom Apply Button (Sejda-style) ── */
+.bottom-apply-bar {
+  position: absolute; bottom: 0; left: 0; right: 0; z-index: 90;
+  display: flex; justify-content: center; padding: 16px;
+  pointer-events: none;
+}
+.apply-btn {
+  pointer-events: all;
+  display: flex; align-items: center; gap: 8px;
+  padding: 14px 36px; border: none; border-radius: 8px;
+  background: #3bbf8f; color: #fff; font-weight: 700;
+  font-size: 1rem; cursor: pointer; font-family: inherit;
+  box-shadow: 0 4px 16px rgba(59,191,143,0.35);
+  transition: all 0.2s ease;
+}
+.apply-btn:hover:not(:disabled) {
+  background: #30a87d; transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(59,191,143,0.45);
+}
+.apply-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.apply-btn svg { width: 18px; height: 18px; }
+.apply-arrow {
+  font-size: 1.3rem;
+  font-weight: 400;
+  margin-left: 4px;
+}
+
+.spinner-sm {
+  width: 16px; height: 16px; border: 2.5px solid rgba(255,255,255,0.3);
+  border-top-color: #fff; border-radius: 50%; animation: spin 0.6s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Find & Replace Panel ── */
+.find-replace-panel {
+  position: absolute; top: 110px; right: 16px; z-index: 200;
+  background: #fff; border: 1px solid #d0d8e0; border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12); padding: 16px; width: 300px;
+  animation: ftFadeIn 0.15s ease;
+}
+.find-replace-panel h4 { font-size: 0.85rem; font-weight: 700; margin: 0 0 10px; color: var(--text); }
+.fr-row { display: flex; gap: 6px; margin-bottom: 8px; }
+.fr-row input {
+  flex: 1; padding: 7px 10px; border: 1px solid #e0e0e0; border-radius: 6px;
+  font-size: 0.8rem; font-family: inherit;
+}
+.fr-row input:focus { outline: none; border-color: #2570b5; }
+.fr-btn {
+  padding: 7px 12px; border: none; border-radius: 6px;
+  font-weight: 600; font-size: 0.78rem; cursor: pointer; font-family: inherit; transition: all 0.15s;
+}
+.fr-btn.primary { background: #2570b5; color: #fff; }
+.fr-btn.primary:hover { filter: brightness(0.9); }
+.fr-close {
+  position: absolute; top: 8px; right: 10px; background: none;
+  border: none; font-size: 1.2rem; cursor: pointer; color: var(--text-muted); padding: 4px;
+}
+.fr-results { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
+
+/* ── Interactive Text Blocks (for existing PDF text) ── */
+.text-block-hit {
+  position: absolute;
+  cursor: text;
+  background: transparent;
+  transition: all 0.15s;
+  border-radius: 2px;
+}
+
+.text-block-hit:hover {
+  background: rgba(37, 112, 181, 0.08);
+  outline: 1.5px dashed rgba(37, 112, 181, 0.5);
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .thumb-panel { display: none; }
+}
+@media (max-width: 640px) {
+  .editor-toolbar { gap: 2px; padding: 6px 8px; overflow-x: auto; justify-content: flex-start; }
+  .tool-btn { padding: 5px 8px; font-size: 0.72rem; }
+  .tool-btn span { display: none; }
+  .page-controls-bar { gap: 6px; }
+
+  .ft-bar {
+    flex-wrap: wrap;
+    height: auto;
+    max-width: 280px;
+  }
+}
