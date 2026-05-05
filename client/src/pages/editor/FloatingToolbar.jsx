@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import { cssFontFamily, AVAILABLE_FONTS, FONT_SIZES } from './helpers';
 
-export default function FloatingToolbar({ el, wrapRef, zoom, updateEl, deleteEl, dupEl }) {
+export default function FloatingToolbar({ el, wrapRef, zoom, updateEl, deleteEl, dupEl, startDrag }) {
   const [showLinkInput, setShowLinkInput] = useState(false);
   const [linkUrl, setLinkUrl] = useState('');
   const linkInputRef = useRef(null);
@@ -182,7 +182,7 @@ export default function FloatingToolbar({ el, wrapRef, zoom, updateEl, deleteEl,
         <div className="ft-sep" />
 
         {/* Move indicator */}
-        <button className="ft-btn" title="Drag the element to move" style={{ cursor: 'grab' }}>
+        <button className="ft-btn" title="Drag the element to move" style={{ cursor: 'grab' }} onMouseDown={startDrag}>
           <svg viewBox="0 0 16 16" width="16" height="16" fill="none">
             <path d="M8 2v12M2 8h12" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
             <path d="M6 4l2-2 2 2M6 12l2 2 2-2M4 6l-2 2 2 2M12 6l2 2-2 2" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>

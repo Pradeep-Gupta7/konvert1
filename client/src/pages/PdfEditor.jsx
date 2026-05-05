@@ -207,35 +207,50 @@ export default function PdfEditor() {
     // Map original font to best CSS font for preview
     const mappedFont = block.fontName.includes('Times') ? 'Times-Roman'
       : block.fontName.includes('Courier') ? 'Courier'
-      : block.fontName.includes('Georgia') ? 'Georgia'
-      : block.fontName.includes('Calibri') ? 'Calibri'
-      : block.fontName.includes('Verdana') ? 'Verdana'
-      : block.fontName.includes('Arial') ? 'Arial'
-      : 'Helvetica';
+        : block.fontName.includes('Georgia') ? 'Georgia'
+          : block.fontName.includes('Calibri') ? 'Calibri'
+            : block.fontName.includes('Verdana') ? 'Verdana'
+              : block.fontName.includes('Arial') ? 'Arial'
+                : 'Helvetica';
 
-    setElements(p => [
-      ...p,
-      {
-        id: wId, type: 'whiteout', pageIdx: block.pageIdx,
-        x: block.x - 2, y: block.y - 2, w: block.w + 4, h: block.h + 4
-      },
-      {
-        id: tId, type: 'text', pageIdx: block.pageIdx,
-        x: block.x, y: block.y,
-        text: block.text,
-        fontSize: Math.round(block.fontSize),
-        fontFamily: mappedFont,
-        color: block.color,
-        bold: block.bold,
-        italic: block.italic,
-        underline: false,
-        link: '',
-        w: block.w + 40,
-        h: block.h + 10,
-        _whiteoutId: wId  // Link to whiteout for cleanup
-      }
-    ]);
-    setSelectedId(tId);
+    const img = new Image();
+    img.onload = () => {
+      const cvs = document.createElement('canvas');
+      cvs.width = img.width; cvs.height = img.height;
+      const ctx = cvs.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+      
+      const sampleX = Math.max(0, block.x - 4);
+      const sampleY = Math.max(0, block.y - 4);
+      const data = ctx.getImageData(sampleX, sampleY, 1, 1).data;
+      const bgColor = `rgb(${data[0]}, ${data[1]}, ${data[2]})`;
+
+      setElements(p => [
+        ...p,
+        {
+          id: wId, type: 'whiteout', pageIdx: block.pageIdx,
+          x: block.x, y: block.y, w: block.w, h: block.h,
+          fillColor: bgColor
+        },
+        {
+          id: tId, type: 'text', pageIdx: block.pageIdx,
+          x: block.x, y: block.y,
+          text: block.text,
+          fontSize: Math.round(block.fontSize),
+          fontFamily: mappedFont,
+          color: block.color,
+          bold: block.bold,
+          italic: block.italic,
+          underline: false,
+          link: '',
+          w: block.w + 40,
+          h: block.h + 10,
+          _whiteoutId: wId  // Link to whiteout for cleanup
+        }
+      ]);
+      setSelectedId(tId);
+    };
+    img.src = pages[currentPage];
   };
 
   /* ── Alignment guide computation ── */
@@ -269,11 +284,11 @@ export default function PdfEditor() {
 
     for (const t of targets) {
       const vChecks = [
-        { dragEdge: dLeft,  targetEdge: t.left },
-        { dragEdge: dLeft,  targetEdge: t.right },
+        { dragEdge: dLeft, targetEdge: t.left },
+        { dragEdge: dLeft, targetEdge: t.right },
         { dragEdge: dRight, targetEdge: t.left },
         { dragEdge: dRight, targetEdge: t.right },
-        { dragEdge: dCx,    targetEdge: t.cx },
+        { dragEdge: dCx, targetEdge: t.cx },
       ];
       for (const vc of vChecks) {
         const diff = Math.abs(vc.dragEdge - vc.targetEdge);
@@ -285,11 +300,11 @@ export default function PdfEditor() {
       }
 
       const hChecks = [
-        { dragEdge: dTop,    targetEdge: t.top },
-        { dragEdge: dTop,    targetEdge: t.bottom },
+        { dragEdge: dTop, targetEdge: t.top },
+        { dragEdge: dTop, targetEdge: t.bottom },
         { dragEdge: dBottom, targetEdge: t.top },
         { dragEdge: dBottom, targetEdge: t.bottom },
-        { dragEdge: dCy,     targetEdge: t.cy },
+        { dragEdge: dCy, targetEdge: t.cy },
       ];
       for (const hc of hChecks) {
         const diff = Math.abs(hc.dragEdge - hc.targetEdge);
@@ -497,11 +512,19 @@ export default function PdfEditor() {
     if (el.type === 'text') {
       return (
         <div key={el.id} className={`el-overlay${isSel ? ' selected' : ''}`} style={style} onMouseDown={onDown}>
+          {isSel && (
+            <div className="text-drag-bar" onMouseDown={e => { e.preventDefault(); onDown(e); }} title="Drag to move">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z"/></svg>
+            </div>
+          )}
           <textarea
             className="el-text-area"
             value={el.text}
             onChange={e => updateEl(el.id, { text: e.target.value })}
-            onMouseDown={e => e.stopPropagation()}
+            onMouseDown={e => {
+              if (selectedId !== el.id) setSelectedId(el.id);
+            }}
+            onDragStart={e => e.preventDefault()}
             style={{
               fontSize: el.fontSize,
               color: el.color,
@@ -544,7 +567,7 @@ export default function PdfEditor() {
         </div>
       );
     }
-    if (el.type === 'whiteout') return <div key={el.id} className={`el-overlay${isSel ? ' selected' : ''}`} style={{ ...style, background: '#fff' }} onMouseDown={onDown}>{isSel && <div className="el-resize se" onMouseDown={onResizeDown} />}</div>;
+    if (el.type === 'whiteout') return <div key={el.id} className="el-overlay" style={{ ...style, background: el.fillColor || '#fff', pointerEvents: 'none' }} />;
     if (el.type === 'highlight') return <div key={el.id} className={`el-overlay${isSel ? ' selected' : ''}`} style={{ ...style, background: el.color || '#ffff00', opacity: 0.35 }} onMouseDown={onDown}>{isSel && <div className="el-resize se" onMouseDown={onResizeDown} />}</div>;
     if (el.type === 'strikethrough') return <div key={el.id} className={`el-overlay${isSel ? ' selected' : ''}`} style={{ ...style, background: 'red', height: 2 }} onMouseDown={onDown} />;
     return null;
@@ -557,9 +580,9 @@ export default function PdfEditor() {
         <div className="editor-upload-zone">
           <div className="upload-inner" onClick={() => fileRef.current?.click()}>
             <svg viewBox="0 0 64 64" fill="none" className="upload-icon">
-              <rect x="8" y="8" width="48" height="48" rx="8" fill="#fff3f0" stroke="#e2514a" strokeWidth="2"/>
-              <path d="M32 20v20M22 30l10-10 10 10" stroke="#e2514a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M20 44h24" stroke="#e2514a" strokeWidth="2" strokeLinecap="round"/>
+              <rect x="8" y="8" width="48" height="48" rx="8" fill="#fff3f0" stroke="#e2514a" strokeWidth="2" />
+              <path d="M32 20v20M22 30l10-10 10 10" stroke="#e2514a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M20 44h24" stroke="#e2514a" strokeWidth="2" strokeLinecap="round" />
             </svg>
             <h2>Upload PDF to Edit</h2>
             <p>Add text, images, shapes, whiteout, annotations &amp; more</p>
@@ -604,7 +627,9 @@ export default function PdfEditor() {
             ))}
           </div>
 
-          <div className="editor-canvas-area">
+          <div className="editor-canvas-area" onMouseDown={(e) => {
+            if (e.target === e.currentTarget) setSelectedId(null);
+          }}>
             <div ref={wrapRef} className={`canvas-wrapper${activeTool !== 'select' ? ' crosshair' : ''}`}
               style={{ width: pageDims[currentPage]?.w, height: pageDims[currentPage]?.h, transform: `scale(${zoom})` }}
               onMouseDown={onCanvasDown} onMouseMove={onCanvasMove} onMouseUp={onCanvasUp}>
@@ -613,12 +638,16 @@ export default function PdfEditor() {
                 style={{ width: pageDims[currentPage]?.w, height: pageDims[currentPage]?.h }} />
 
               {/* Clickable text hit areas for existing PDF text */}
-              {activeTool === 'select' && pageBlocks.map(b => (
-                <div key={b.id} className="text-block-hit" onClick={() => onTextBlockClick(b)}
-                  style={{ left: b.x, top: b.y, width: b.w, height: b.h }}
-                  title={`Click to edit: "${b.text.slice(0, 40)}${b.text.length > 40 ? '…' : ''}"`}
-                />
-              ))}
+              {activeTool === 'select' && pageBlocks.map(b => {
+                const isConverted = elements.some(e => e.type === 'whiteout' && e.pageIdx === currentPage && Math.abs(e.x - b.x) < 2 && Math.abs(e.y - b.y) < 2);
+                if (isConverted) return null;
+                return (
+                  <div key={b.id} className="text-block-hit" onClick={() => onTextBlockClick(b)}
+                    style={{ left: b.x, top: b.y, width: b.w, height: b.h }}
+                    title={`Click to edit: "${b.text.slice(0, 40)}${b.text.length > 40 ? '…' : ''}"`}
+                  />
+                );
+              })}
 
               {pageEls.map(renderEl)}
 
@@ -629,6 +658,12 @@ export default function PdfEditor() {
                 updateEl={updateEl}
                 deleteEl={deleteEl}
                 dupEl={dupEl}
+                startDrag={(e) => {
+                  e.stopPropagation();
+                  pushHistory();
+                  const r = wrapRef.current.getBoundingClientRect();
+                  setDragging({ id: selectedEl.id, ox: (e.clientX - r.left) / zoom - selectedEl.x, oy: (e.clientY - r.top) / zoom - selectedEl.y });
+                }}
               />
 
               {/* ── Alignment guide lines ── */}
