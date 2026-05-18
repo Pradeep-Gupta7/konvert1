@@ -7,11 +7,27 @@ const API_BASE = VITE_API_URL ? `${VITE_API_URL}/api/pdf` : '/api/pdf';
  * Generic helper: POST FormData to an API endpoint and return the blob + metadata.
  */
 async function postFormData(endpoint, formData, timeout = 30000) {
-  const response = await axios.post(`${API_BASE}${endpoint}`, formData, {
-    responseType: 'blob',
-    headers: { 'Content-Type': 'multipart/form-data' },
-    timeout,
-  });
+  let response;
+  try {
+    response = await axios.post(`${API_BASE}${endpoint}`, formData, {
+      responseType: 'blob',
+      headers: { 'Content-Type': 'multipart/form-data' },
+      timeout,
+    });
+  } catch (err) {
+    // If the server returned an error (e.g. 500 status), axios rejects it.
+    // Since we requested responseType: 'blob', the error payload is a Blob.
+    if (err.response && err.response.data) {
+      try {
+        const text = await err.response.data.text();
+        const errorJson = JSON.parse(text);
+        throw new Error(errorJson.error || 'Server error');
+      } catch (parseErr) {
+        throw new Error(parseErr.message || 'Server returned an error');
+      }
+    }
+    throw new Error(err.message || 'Request failed');
+  }
 
   // Check if the response is actually JSON (error) despite being requested as blob
   if (response.data.type === 'application/json') {
