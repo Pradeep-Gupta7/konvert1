@@ -16,8 +16,8 @@ def main():
         from openpyxl.styles import Border, Side
         from openpyxl.utils import get_column_letter
         
-        # Define a high-fidelity light-gray side border representing Excel gridlines
-        grid_side = Side(style='thin', color='D3D3D3')
+        # Define a high-fidelity medium-gray side border representing visible Excel gridlines
+        grid_side = Side(style='thin', color='A0A0A0')
         grid_border = Border(left=grid_side, right=grid_side, top=grid_side, bottom=grid_side)
         
         wb = openpyxl.load_workbook(filepath)
@@ -61,7 +61,7 @@ def main():
             except Exception as e:
                 print(f"Warning (autofit): {e}")
                 
-            # 5. Force scaling to fit exactly 1 page wide and 1 page tall
+            # 5. Force scaling to fit exactly 1 page wide and 1 page tall on A4 sheet page
             try:
                 if not sheet.sheet_properties.pageSetUpPr:
                     sheet.sheet_properties.pageSetUpPr = openpyxl.worksheet.properties.PageSetupProperties(fitToPage=True)
@@ -70,6 +70,7 @@ def main():
                 
                 sheet.page_setup.fitToWidth = 1
                 sheet.page_setup.fitToHeight = 1
+                sheet.page_setup.paperSize = 9 # XL_PAPERSIZE_A4
                 
                 # Dynamically choose landscape orientation if table is wide (improves fitting!)
                 if sheet.max_column > sheet.max_row:

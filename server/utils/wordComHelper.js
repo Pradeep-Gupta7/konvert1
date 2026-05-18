@@ -107,9 +107,30 @@ async function libreOfficeConvert(inputPath, outputPath) {
   const absOutputDir = path.dirname(path.resolve(outputPath));
   const filename = path.basename(absInput);
 
-  // If it is an Excel file (.xlsx), run our python gridline enabler first!
-  const ext = path.extname(filename).toLowerCase();
-  if (ext === '.xlsx') {
+  let currentInput = absInput;
+  let currentExt = ext;
+  let tempXlsxCreated = false;
+
+  // If the user uploads an older .xls file, convert it to .xlsx first so openpyxl can pre-process it!
+  if (ext === '.xls') {
+    try {
+      console.log('[Office] Converting old .xls format to .xlsx to apply gridlines & A4 scaling...');
+      const convertCmd = `libreoffice --headless --invisible --nodefault --nofirststartwizard --nolockcheck --nologo --norestore --convert-to xlsx --outdir "${absOutputDir}" "${absInput}"`;
+      await execPromise(convertCmd);
+      const xlsxName = filename.replace(/\.xls$/i, '.xlsx');
+      const tempXlsxPath = path.join(absOutputDir, xlsxName);
+      if (fs.existsSync(tempXlsxPath)) {
+        currentInput = tempXlsxPath;
+        currentExt = '.xlsx';
+        tempXlsxCreated = true;
+      }
+    } catch (err) {
+      console.warn('[Office] Failed to pre-convert .xls to .xlsx:', err.message);
+    }
+  }
+
+  // If it is a .xlsx spreadsheet, run our Python gridline and A4 page-fit enabler!
+  if (currentExt === '.xlsx') {
     try {
       let pythonCmd = IS_WINDOWS ? 'python' : 'python3';
       // Fallback directly to the Docker virtual environment python path if it exists
@@ -120,8 +141,8 @@ async function libreOfficeConvert(inputPath, outputPath) {
       }
 
       const pyScript = path.resolve(__dirname, 'enable_gridlines.py');
-      await execPromise(`"${pythonCmd}" "${pyScript}" "${absInput}"`);
-      console.log('[Office] Successfully enabled Calc gridlines & page-fit scaling inside spreadsheet.');
+      await execPromise(`"${pythonCmd}" "${pyScript}" "${currentInput}"`);
+      console.log('[Office] Successfully enabled Calc gridlines & A4 page-fit scaling inside spreadsheet.');
     } catch (err) {
       console.warn('[Office] Failed to enable Calc gridlines and scaling. Command error:', err.message);
       if (err.stdout) console.warn('Command stdout:', err.stdout);
@@ -132,7 +153,7 @@ async function libreOfficeConvert(inputPath, outputPath) {
   // Command to invoke headless LibreOffice with low-memory and speed-optimized parameters
   // Essential for Render's 512MB RAM Free Tier to prevent Out of Memory (OOM) crashes
   let exportFilter = 'pdf';
-  if (ext === '.xlsx' || ext === '.xls') {
+  if (currentExt === '.xlsx' || currentExt === '.xls') {
     // Use LibreOffice's built-in calc_pdf_Export filter with SinglePageSheets option enabled.
     // Wrap in single quotes on Linux to prevent bash/sh from stripping the double quotes inside the JSON string!
     exportFilter = IS_WINDOWS 
@@ -141,14 +162,15 @@ async function libreOfficeConvert(inputPath, outputPath) {
   }
 
   const convertArg = IS_WINDOWS ? `"${exportFilter}"` : `'${exportFilter}'`; // wrap in single quotes on Linux
-  const cmd = `libreoffice --headless --invisible --nodefault --nofirststartwizard --nolockcheck --nologo --norestore --convert-to ${convertArg} --outdir "${absOutputDir}" "${absInput}"`;
+  const cmd = `libreoffice --headless --invisible --nodefault --nofirststartwizard --nolockcheck --nologo --norestore --convert-to ${convertArg} --outdir "${absOutputDir}" "${currentInput}"`;
 
   try {
     await execPromise(cmd);
 
     // LibreOffice names output files automatically based on input file base name
-    const inputExt = path.extname(filename);
-    const defaultOutName = filename.replace(inputExt, '.pdf');
+    const tempInputName = path.basename(currentInput);
+    const tempInputExt = path.extname(tempInputName);
+    const defaultOutName = tempInputName.replace(tempInputExt, '.pdf');
     const defaultOutPath = path.join(absOutputDir, defaultOutName);
 
     if (fs.existsSync(defaultOutPath)) {
@@ -161,6 +183,16 @@ async function libreOfficeConvert(inputPath, outputPath) {
     }
   } catch (err) {
     throw new Error(`LibreOffice conversion failed: ${err.message}`);
+  } finally {
+    // Cleanup the temporary .xlsx spreadsheet if we created one from a .xls file
+    if (tempXlsxCreated && fs.existsSync(currentInput)) {
+      try {
+        fs.unlinkSync(currentInput);
+        console.log('[Office] Cleaned up temporary converted .xlsx file.');
+      } catch (e) {
+        console.warn('[Office] Failed to delete temporary .xlsx:', e.message);
+      }
+    }
   }
 }
 
@@ -222,6 +254,7 @@ async function excelToPdfConvert(inputPath, outputPath) {
     `$wb = $excel.Workbooks.Open("${absInput}", $false, $true)`,
     '$wb.Worksheets | ForEach-Object { $_.Cells.EntireColumn.AutoFit() }',
     '$wb.Worksheets | ForEach-Object { $_.PageSetup.PrintGridlines = $true }',
+    '$wb.Worksheets | ForEach-Object { $_.PageSetup.PaperSize = 9 }', // xlPaperA4
     '$wb.Worksheets | ForEach-Object { $_.PageSetup.Zoom = $false; $_.PageSetup.FitToPagesWide = 1; $_.PageSetup.FitToPagesTall = 1 }',
     `$wb.ExportAsFixedFormat(0, "${absOutput}")`,
     '$wb.Close($false)',
