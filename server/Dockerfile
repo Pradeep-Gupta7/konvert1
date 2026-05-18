@@ -10,8 +10,8 @@ RUN apt-get update && apt-get install -y \
     libreoffice \
     fonts-liberation \
     fonts-dejavu \
-    fonts-carlito \
-    fonts-caladea \
+    fonts-crosextra-carlito \
+    fonts-crosextra-caladea \
     --no-install-recommends && \
     rm -rf /var/lib/apt/lists/*
 
