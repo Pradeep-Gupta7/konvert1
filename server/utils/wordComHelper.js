@@ -131,7 +131,17 @@ async function libreOfficeConvert(inputPath, outputPath) {
 
   // Command to invoke headless LibreOffice with low-memory and speed-optimized parameters
   // Essential for Render's 512MB RAM Free Tier to prevent Out of Memory (OOM) crashes
-  const cmd = `libreoffice --headless --invisible --nodefault --nofirststartwizard --nolockcheck --nologo --norestore --convert-to pdf --outdir "${absOutputDir}" "${absInput}"`;
+  let exportFilter = 'pdf';
+  if (ext === '.xlsx' || ext === '.xls') {
+    // Use LibreOffice's built-in calc_pdf_Export filter with SinglePageSheets option enabled.
+    // Wrap in single quotes on Linux to prevent bash/sh from stripping the double quotes inside the JSON string!
+    exportFilter = IS_WINDOWS 
+      ? 'pdf:calc_pdf_Export:{\\"SinglePageSheets\\":{\\"type\\":\\"boolean\\",\\"value\\":\\"true\\"}}' 
+      : "pdf:calc_pdf_Export:{\"SinglePageSheets\":{\"type\":\"boolean\",\"value\":\"true\"}}";
+  }
+
+  const convertArg = IS_WINDOWS ? `"${exportFilter}"` : `'${exportFilter}'`; // wrap in single quotes on Linux
+  const cmd = `libreoffice --headless --invisible --nodefault --nofirststartwizard --nolockcheck --nologo --norestore --convert-to ${convertArg} --outdir "${absOutputDir}" "${absInput}"`;
 
   try {
     await execPromise(cmd);
