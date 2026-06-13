@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import logoImg from '../../assets/logo.png';
 import './SignInModal.css';
 
 export default function SignInModal({ onClose }) {
@@ -26,7 +27,7 @@ export default function SignInModal({ onClose }) {
       <div className="modal-box" role="dialog" aria-modal="true" aria-label="Sign In">
         <button className="modal-close" onClick={onClose} aria-label="Close">×</button>
 
-        <div className="modal-logo">K</div>
+        <img src={logoImg} alt="Konvert Logo" className="modal-logo-img" />
 
         <h2 className="modal-title">
           {mode === 'signin' ? 'Welcome back' : 'Create account'}

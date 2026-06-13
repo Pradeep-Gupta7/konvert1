@@ -45,13 +45,12 @@
 
 .modal-close:hover { color: var(--text); background: #f0f0f0; }
 
-.modal-logo {
-  width: 44px; height: 44px;
-  border-radius: 10px;
-  background: var(--accent);
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 900; font-size: 20px; color: #ffffff;
-  margin: 0 auto 16px;
+.modal-logo-img {
+  height: 56px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto 20px;
 }
 
 .modal-title   { text-align: center; font-size: 1.35rem; font-weight: 800; color: var(--text); margin: 0 0 6px; }

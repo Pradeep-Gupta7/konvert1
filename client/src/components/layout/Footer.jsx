@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import logoImg from '../../assets/logo.png';
 import './Footer.css';
 
 /* ── Tool categories ── */
@@ -54,8 +55,7 @@ export default function Footer() {
         {/* Brand */}
         <div className="footer-brand-col">
           <div className="footer-logo-row">
-            <div className="footer-logo-box">K</div>
-            <span className="footer-brand-name">Konvert</span>
+            <img src={logoImg} alt="Konvert Logo" className="footer-logo" />
           </div>
           <p className="footer-tagline">
             Every tool you need to work with PDFs and images — fast, free, and secure.

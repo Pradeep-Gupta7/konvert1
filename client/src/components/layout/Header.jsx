@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import SignInModal from '../ui/SignInModal';
+import logoImg from '../../assets/logo.png';
 import './Header.css';
 
 const CATEGORIES = [
@@ -50,8 +51,7 @@ export default function Header() {
       <header className="site-header">
         <div className="header-inner">
           <Link to="/" className="brand">
-            <div className="logo">K</div>
-            <div className="brand-name">Konvert</div>
+            <img src={logoImg} alt="Konvert Logo" className="brand-logo" />
           </Link>
           <nav className="header-nav">
             <Link to="/" className={`nav-link ${location.pathname === '/' ? 'active' : ''}`}>
