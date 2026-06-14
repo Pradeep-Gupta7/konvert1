@@ -64,20 +64,73 @@
   width: 34px;
   height: 34px;
   border-radius: 8px;
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.08);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.95rem;
   cursor: pointer;
-  transition: background 0.2s, border-color 0.2s;
+  transition: background 0.25s ease, border-color 0.25s ease, color 0.25s ease;
   text-decoration: none;
+  border: 1px solid transparent;
 }
 
-.footer-social-btn:hover {
-  background: rgba(255,255,255,0.12);
-  border-color: rgba(255,255,255,0.2);
+/* Instagram */
+.footer-social-btn.instagram {
+  color: #e1306c;
+  background: rgba(225, 48, 108, 0.05);
+  border-color: rgba(225, 48, 108, 0.15);
+}
+.footer-social-btn.instagram:hover {
+  background: rgba(225, 48, 108, 0.18);
+  border-color: rgba(225, 48, 108, 0.5);
+  color: #ff4d8d;
+}
+
+/* LinkedIn */
+.footer-social-btn.linkedin {
+  color: #0077b5;
+  background: rgba(0, 119, 181, 0.05);
+  border-color: rgba(0, 119, 181, 0.15);
+}
+.footer-social-btn.linkedin:hover {
+  background: rgba(0, 119, 181, 0.18);
+  border-color: rgba(0, 119, 181, 0.5);
+  color: #00a0f0;
+}
+
+/* Email */
+.footer-social-btn.email {
+  color: #ea4335;
+  background: rgba(234, 67, 53, 0.05);
+  border-color: rgba(234, 67, 53, 0.15);
+}
+.footer-social-btn.email:hover {
+  background: rgba(234, 67, 53, 0.18);
+  border-color: rgba(234, 67, 53, 0.5);
+  color: #ff5c4d;
+}
+
+/* X (Twitter) */
+.footer-social-btn.x {
+  color: #e2e8f0;
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+.footer-social-btn.x:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+}
+
+/* WhatsApp */
+.footer-social-btn.whatsapp {
+  color: #25d366;
+  background: rgba(37, 211, 102, 0.05);
+  border-color: rgba(37, 211, 102, 0.15);
+}
+.footer-social-btn.whatsapp:hover {
+  background: rgba(37, 211, 102, 0.18);
+  border-color: rgba(37, 211, 102, 0.5);
+  color: #2efd7b;
 }
 
 /* ── Category column ── */
@@ -104,68 +157,24 @@
   font-size: 1rem;
 }
 
-/* ── Tool list (always visible, scrollable on hover) ── */
+/* ── Navigation list ── */
 .footer-tool-list {
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  max-height: 160px;
-  overflow: hidden;
-  position: relative;
-  transition: max-height 0.4s ease;
-}
-
-.footer-cat-col:hover .footer-tool-list {
-  max-height: 500px;
-  overflow-y: auto;
-}
-
-/* Custom scrollbar inside tool list */
-.footer-tool-list::-webkit-scrollbar { width: 4px; }
-.footer-tool-list::-webkit-scrollbar-track { background: transparent; }
-.footer-tool-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 4px; }
-
-/* Fade gradient at bottom to hint at scroll */
-.footer-tool-list::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 36px;
-  background: linear-gradient(to top, #1a1a2e, transparent);
-  pointer-events: none;
-  transition: opacity 0.3s;
-}
-
-.footer-cat-col:hover .footer-tool-list::after {
-  opacity: 0;
-}
-
-/* Individual tool link */
-.footer-tool-link {
-  display: flex;
-  align-items: center;
   gap: 8px;
-  padding: 6px 8px;
-  border-radius: 7px;
+}
+
+/* Individual link */
+.footer-tool-link {
   font-size: 0.83rem;
   color: #64748b;
   text-decoration: none;
-  transition: background 0.18s, color 0.18s;
+  transition: color 0.18s;
   white-space: nowrap;
 }
 
 .footer-tool-link:hover {
-  background: rgba(255,255,255,0.06);
   color: #e2e8f0;
-}
-
-.footer-tool-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  flex-shrink: 0;
 }
 
 /* ── Divider ── */
@@ -182,7 +191,7 @@
   padding: 20px 24px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   flex-wrap: wrap;
   gap: 12px;
 }
@@ -190,30 +199,5 @@
 .footer-copy {
   font-size: 0.8rem;
   color: #475569;
-}
-
-.footer-bottom-links {
-  display: flex;
-  gap: 20px;
-}
-
-.footer-bottom-links a {
-  font-size: 0.8rem;
-  color: #475569;
-  text-decoration: none;
-  transition: color 0.2s;
-}
-
-.footer-bottom-links a:hover { color: #94a3b8; }
-
-/* ── Hover tooltip hint ── */
-.footer-scroll-hint {
-  font-size: 0.7rem;
-  color: #334155;
-  margin-left: 4px;
-  transition: opacity 0.2s;
-}
-
-.footer-cat-col:hover .footer-scroll-hint {
-  opacity: 0;
+  text-align: center;
 }

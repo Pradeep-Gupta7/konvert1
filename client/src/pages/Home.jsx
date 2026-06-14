@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './Home.css';
 
@@ -257,6 +258,21 @@ const tools = [
     description: 'Translate PDF content to any language using AI.',
   },
   {
+    title: 'Chat with PDF',
+    color: '#3b82f6',
+    path: '/ai-chat',
+    isAi: true,
+    icon: (
+      <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="8" y="6" width="32" height="36" rx="3" fill="white" fillOpacity="0.9"/>
+        <path d="M16 16h16M16 22h10" stroke="#3b82f6" strokeWidth="2.5" strokeLinecap="round"/>
+        <circle cx="34" cy="34" r="8" fill="#3b82f6"/>
+        <text x="34" y="38" textAnchor="middle" fontSize="11" fontWeight="bold" fill="white" fontFamily="Inter,sans-serif">💬</text>
+      </svg>
+    ),
+    description: 'Ask questions, summarize, and extract insights from your PDF with AI.',
+  },
+  {
     title: 'Image Editor',
     color: '#0ea5e9',
     path: '/image-editor',
@@ -274,45 +290,337 @@ const tools = [
   },
 ];
 
+const slides = [
+  {
+    image: '/merge-hero.png',
+    title: 'Merge & Combine',
+  },
+  {
+    image: '/secure-hero.png',
+    title: 'Secure & Protect',
+  },
+  {
+    image: '/convert-hero.png',
+    title: 'Convert & Transform',
+  },
+  {
+    image: '/ai-hero.png',
+    title: 'AI Document Chat',
+  }
+];
+
+function HeroSlideshow() {
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % slides.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <div className="hero-slideshow">
+      {slides.map((slide, idx) => (
+        <div
+          key={idx}
+          className={`hero-slide ${idx === activeIndex ? 'active' : ''}`}
+        >
+          <img src={slide.image} alt={slide.title} className="hero-slide-img" />
+          <div className="hero-slide-badge">
+            <span className="badge-title">{slide.title}</span>
+          </div>
+        </div>
+      ))}
+      <div className="hero-slideshow-dots">
+        {slides.map((_, idx) => (
+          <button
+            key={idx}
+            className={`slideshow-dot ${idx === activeIndex ? 'active' : ''}`}
+            onClick={() => setActiveIndex(idx)}
+            aria-label={`Go to slide ${idx + 1}`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+const categories = [
+  { id: 'all', title: 'All Tools', icon: '⚡', description: 'Access all available services in one place.' },
+  { id: 'ai', title: 'AI PDF Toolkit', icon: '✨', description: 'Leverage artificial intelligence to summarize, chat, and translate documents.' },
+  { id: 'edit', title: 'PDF & Image Editors', icon: '📝', description: 'Edit PDF text directly, or remove backgrounds and crop images in-browser.' },
+  { id: 'organize', title: 'Organize PDF', icon: '🗂️', description: 'Merge, split, compress, protect, watermark, and reorder PDF pages.' },
+  { id: 'convert', title: 'Convert PDF', icon: '🔄', description: 'Convert to and from PDF formats easily.' }
+];
+
 export default function Home() {
+  const [activeCategory, setActiveCategory] = useState('all');
+
+  const categorizedTools = tools.map((t) => {
+    let category = 'organize';
+    if (t.isAi) {
+      category = 'ai';
+    } else if (t.title === 'Edit PDF' || t.title === 'Image Editor') {
+      category = 'edit';
+    } else if (
+      t.title.includes('to') ||
+      t.title.includes('→') ||
+      t.title.includes('Extract')
+    ) {
+      category = 'convert';
+    }
+    return { ...t, category };
+  });
+
+  const filteredCategories = activeCategory === 'all'
+    ? categories.filter(c => c.id !== 'all')
+    : categories.filter(c => c.id === activeCategory);
+
   return (
     <>
       {/* Hero */}
       <section className="hero">
-        <h1>Every tool you need to work with PDFs</h1>
-        <p className="hero-sub">
-          All are <strong>100% FREE</strong> and easy to use! Merge, split, compress,
-          protect, and convert PDFs with just a few clicks.
-        </p>
+        <div className="hero-container">
+          <div className="hero-text-content">
+            <h1>Every tool you need to work with PDFs</h1>
+            <p className="hero-sub">
+              All are <strong>100% FREE</strong> and easy to use! Merge, split, compress,
+              protect, and convert PDFs with just a few clicks.
+            </p>
+            <div className="hero-cta-group">
+              <a href="#tools" className="hero-btn-primary">
+                Explore Tools
+              </a>
+              <Link to="/edit-pdf" className="hero-btn-secondary">
+                📝 Edit PDF
+              </Link>
+            </div>
+          </div>
+          <div className="hero-visual-content">
+            <HeroSlideshow />
+          </div>
+        </div>
       </section>
 
-      {/* Tool Grid */}
-      <section className="tools-section">
-        <div className="tools-grid">
-          {tools.map((tool) => (
-            <Link
-              key={tool.title}
-              to={tool.path}
-              className={`tool-card tool-card-link${tool.isAi ? ' tool-card-ai' : ''}`}
-              style={{ '--card-color': tool.color, textDecoration: 'none' }}
-            >
-              {tool.isAi && <span className="tool-ai-tag">✨ AI</span>}
-              <div className="tool-icon-box">
-                {tool.icon}
+      {/* Category Tabs */}
+      <div className="category-tabs">
+        {categories.map((cat) => (
+          <button
+            key={cat.id}
+            className={`category-tab ${activeCategory === cat.id ? 'active' : ''} ${cat.id === 'ai' ? 'ai-tab' : ''}`}
+            onClick={() => setActiveCategory(cat.id)}
+          >
+            <span className="category-tab-icon">{cat.icon}</span>
+            {cat.title}
+          </button>
+        ))}
+      </div>
+
+      {/* Tool Grid Section */}
+      <section id="tools" className="tools-section">
+        {filteredCategories.map((cat) => {
+          const categoryTools = categorizedTools.filter(t => t.category === cat.id);
+          if (categoryTools.length === 0) return null;
+
+          return (
+            <div key={cat.id} className={`category-section ${cat.id}-section`}>
+              <div className="category-header">
+                <h2 className={`category-title ${cat.id === 'ai' ? 'category-title-ai' : ''}`}>
+                  <span className="category-icon-inline">{cat.icon}</span> {cat.title}
+                </h2>
+                <p className="category-desc">{cat.description}</p>
               </div>
-              <h3>{tool.title}</h3>
-              <p className="tool-description">{tool.description}</p>
-              <div className="tool-card-arrow">
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                  <path d="M7 4l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
+              <div className="tools-grid">
+                {categoryTools.map((tool) => (
+                  <Link
+                    key={tool.title}
+                    to={tool.path}
+                    className={`tool-card tool-card-link${tool.isAi ? ' tool-card-ai' : ''}`}
+                    style={{ '--card-color': tool.color, textDecoration: 'none' }}
+                  >
+                    {tool.isAi && <span className="tool-ai-tag">✨ AI</span>}
+                    <div className="tool-icon-box">
+                      {tool.icon}
+                    </div>
+                    <h3>{tool.title}</h3>
+                    <p className="tool-description">{tool.description}</p>
+                    <div className="tool-card-arrow">
+                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path d="M7 4l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    </div>
+                  </Link>
+                ))}
               </div>
-            </Link>
-          ))}
+            </div>
+          );
+        })}
+      </section>
+
+      {/* Testimonials */}
+      <section className="testimonials-section">
+        <div className="testimonials-inner">
+          <div className="testimonials-header">
+            <span className="testimonials-badge">⭐ Loved by Users</span>
+            <h2>What People Are Saying</h2>
+            <p>Join thousands of students, professionals, and teams who trust Konvert every day.</p>
+          </div>
+
+          <div className="testimonials-track-wrapper">
+            <div className="testimonials-track">
+              {[
+                {
+                  name: 'Rahul Sharma',
+                  role: 'College Student, Delhi',
+                  avatar: '🎓',
+                  stars: 5,
+                  text: 'I use Konvert almost every day for my college assignments. Merging and compressing PDFs is so fast — and completely free! No annoying sign-up required.',
+                },
+                {
+                  name: 'Priya Mehta',
+                  role: 'HR Manager, Mumbai',
+                  avatar: '💼',
+                  stars: 5,
+                  text: 'I needed to protect confidential HR documents with a password. Konvert did it in seconds. The interface is clean and super easy to use.',
+                },
+                {
+                  name: 'Arjun Verma',
+                  role: 'Freelance Designer, Bangalore',
+                  avatar: '🎨',
+                  stars: 5,
+                  text: 'The Image Editor feature blew me away — background removal right in the browser! I use it constantly for client work. Absolutely no other tool needed.',
+                },
+                {
+                  name: 'Sneha Joshi',
+                  role: 'CA Intern, Pune',
+                  avatar: '📊',
+                  stars: 5,
+                  text: 'Converting Excel reports to PDF for clients used to take me forever. With Konvert it\'s just one click. A must-have tool for finance professionals!',
+                },
+                {
+                  name: 'Mohammed Aslam',
+                  role: 'Teacher, Hyderabad',
+                  avatar: '📚',
+                  stars: 5,
+                  text: 'I use the AI Summarizer to quickly understand long research papers. It saves me hours every week. The translation feature is incredible too!',
+                },
+                {
+                  name: 'Tanvi Kapoor',
+                  role: 'Law Student, Chennai',
+                  avatar: '⚖️',
+                  stars: 5,
+                  text: 'Chat with PDF is a game-changer for studying case files. I ask the PDF questions and it answers! Konvert is light years ahead of other free tools.',
+                },
+                {
+                  name: 'Vikram Singh',
+                  role: 'Startup Founder, Noida',
+                  avatar: '🚀',
+                  stars: 5,
+                  text: 'My whole team switched to Konvert. We watermark all our proposals and split reports for clients. Privacy is top-notch — files are deleted automatically.',
+                },
+                {
+                  name: 'Ananya Das',
+                  role: 'Content Writer, Kolkata',
+                  avatar: '✍️',
+                  stars: 5,
+                  text: 'The PDF to Word conversion is spot-on. Formatting stays intact and I can edit documents immediately. 10x better than any other converter I\'ve tried!',
+                },
+              ].map((t, i) => (
+                <div className="testimonial-card" key={i}>
+                  <div className="testimonial-stars">
+                    {'⭐'.repeat(t.stars)}
+                  </div>
+                  <p className="testimonial-text">"{t.text}"</p>
+                  <div className="testimonial-author">
+                    <div className="testimonial-avatar">{t.avatar}</div>
+                    <div>
+                      <div className="testimonial-name">{t.name}</div>
+                      <div className="testimonial-role">{t.role}</div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              {/* Duplicate set for infinite scroll */}
+              {[
+                {
+                  name: 'Rahul Sharma',
+                  role: 'College Student, Delhi',
+                  avatar: '🎓',
+                  stars: 5,
+                  text: 'I use Konvert almost every day for my college assignments. Merging and compressing PDFs is so fast — and completely free! No annoying sign-up required.',
+                },
+                {
+                  name: 'Priya Mehta',
+                  role: 'HR Manager, Mumbai',
+                  avatar: '💼',
+                  stars: 5,
+                  text: 'I needed to protect confidential HR documents with a password. Konvert did it in seconds. The interface is clean and super easy to use.',
+                },
+                {
+                  name: 'Arjun Verma',
+                  role: 'Freelance Designer, Bangalore',
+                  avatar: '🎨',
+                  stars: 5,
+                  text: 'The Image Editor feature blew me away — background removal right in the browser! I use it constantly for client work. Absolutely no other tool needed.',
+                },
+                {
+                  name: 'Sneha Joshi',
+                  role: 'CA Intern, Pune',
+                  avatar: '📊',
+                  stars: 5,
+                  text: 'Converting Excel reports to PDF for clients used to take me forever. With Konvert it\'s just one click. A must-have tool for finance professionals!',
+                },
+                {
+                  name: 'Mohammed Aslam',
+                  role: 'Teacher, Hyderabad',
+                  avatar: '📚',
+                  stars: 5,
+                  text: 'I use the AI Summarizer to quickly understand long research papers. It saves me hours every week. The translation feature is incredible too!',
+                },
+                {
+                  name: 'Tanvi Kapoor',
+                  role: 'Law Student, Chennai',
+                  avatar: '⚖️',
+                  stars: 5,
+                  text: 'Chat with PDF is a game-changer for studying case files. I ask the PDF questions and it answers! Konvert is light years ahead of other free tools.',
+                },
+                {
+                  name: 'Vikram Singh',
+                  role: 'Startup Founder, Noida',
+                  avatar: '🚀',
+                  stars: 5,
+                  text: 'My whole team switched to Konvert. We watermark all our proposals and split reports for clients. Privacy is top-notch — files are deleted automatically.',
+                },
+                {
+                  name: 'Ananya Das',
+                  role: 'Content Writer, Kolkata',
+                  avatar: '✍️',
+                  stars: 5,
+                  text: 'The PDF to Word conversion is spot-on. Formatting stays intact and I can edit documents immediately. 10x better than any other converter I\'ve tried!',
+                },
+              ].map((t, i) => (
+                <div className="testimonial-card" key={`dup-${i}`} aria-hidden="true">
+                  <div className="testimonial-stars">
+                    {'⭐'.repeat(t.stars)}
+                  </div>
+                  <p className="testimonial-text">"{t.text}"</p>
+                  <div className="testimonial-author">
+                    <div className="testimonial-avatar">{t.avatar}</div>
+                    <div>
+                      <div className="testimonial-name">{t.name}</div>
+                      <div className="testimonial-role">{t.role}</div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
       {/* Feature Banner */}
+
       <section className="feature-banner">
         <div className="feature-banner-inner">
           <div className="feature-item">

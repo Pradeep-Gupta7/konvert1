@@ -1,7 +1,7 @@
 /* ====== ToolCard — ilovepdf light style ====== */
 
 .tool-card {
-  background: #ffffff;
+  background: var(--bg-surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 20px 18px 18px;
@@ -74,8 +74,8 @@
 
 .tool-form input,
 .tool-form select {
-  background: #fafafa;
-  border: 1px solid #e0e0e0;
+  background: var(--bg);
+  border: 1px solid var(--border);
   border-radius: 8px;
   padding: 10px 12px;
   color: var(--text);
@@ -90,7 +90,7 @@
   outline: none;
   border-color: var(--card-color, var(--accent));
   box-shadow: 0 0 0 3px rgba(226, 81, 74, 0.1);
-  background: #ffffff;
+  background: var(--bg-surface);
 }
 
 .tool-form input[type='file'] { cursor: pointer; padding: 8px 10px; font-size: 0.78rem; }
@@ -176,8 +176,8 @@
 .download-link:hover { filter: brightness(0.9); transform: translateY(-1px); }
 
 .delete-btn {
-  background: #fff5f5;
-  border: 1px solid #ffcccc;
+  background: rgba(231, 76, 60, 0.05);
+  border: 1px solid rgba(231, 76, 60, 0.2);
   padding: 7px 12px;
   border-radius: 7px;
   color: #e74c3c;
@@ -187,7 +187,7 @@
   transition: all 0.2s ease;
 }
 
-.delete-btn:hover { background: #ffe5e5; border-color: #ff9999; }
+.delete-btn:hover { background: rgba(231, 76, 60, 0.15); border-color: rgba(231, 76, 60, 0.4); }
 
 .error-text      { color: #e74c3c; font-size: 0.82rem; }
 

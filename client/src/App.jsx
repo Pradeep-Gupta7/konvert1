@@ -19,9 +19,15 @@ import PdfToImages from './pages/PdfToImages';
 import PdfEditor   from './pages/PdfEditor';
 import AiSummarizer from './pages/AiSummarizer';
 import AiTranslator from './pages/AiTranslator';
+import AiChat       from './pages/AiChat';
 import ImageEditor  from './pages/ImageEditor';
 import WordToPdf   from './pages/WordToPdf';
 import ExcelToPdf  from './pages/ExcelToPdf';
+import About       from './pages/About';
+import Privacy     from './pages/Privacy';
+import Terms       from './pages/Terms';
+import Contact     from './pages/Contact';
+import Faq        from './pages/Faq';
 
 export default function App() {
   return (
@@ -30,6 +36,11 @@ export default function App() {
       <main>
         <Routes>
           <Route path="/"              element={<Home />} />
+          <Route path="/about"          element={<About />} />
+          <Route path="/privacy"        element={<Privacy />} />
+          <Route path="/terms"          element={<Terms />} />
+          <Route path="/contact"        element={<Contact />} />
+          <Route path="/faq"           element={<Faq />} />
           <Route path="/merge"         element={<MergePdf />} />
           <Route path="/pdf-to-word"   element={<PdfToWord />} />
           <Route path="/word-to-pdf"   element={<WordToPdf />} />
@@ -49,6 +60,7 @@ export default function App() {
           <Route path="/edit-pdf"      element={<PdfEditor />} />
           <Route path="/ai-summarizer" element={<AiSummarizer />} />
           <Route path="/ai-translator"  element={<AiTranslator />} />
+          <Route path="/ai-chat"        element={<AiChat />} />
           <Route path="/image-editor"  element={<ImageEditor />} />
         </Routes>
       </main>

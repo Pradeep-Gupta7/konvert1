@@ -204,4 +204,22 @@ export async function translatePdf(file, language) {
   return response.data;
 }
 
+export async function uploadPdfForChat(file) {
+  const fd = new FormData();
+  fd.append('file', file);
+  const response = await axios.post(`${AI_BASE}/chat/upload`, fd, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
+  return response.data;
+}
+
+export async function queryPdfChat(text, query, history) {
+  const response = await axios.post(`${AI_BASE}/chat/query`, {
+    text,
+    query,
+    history,
+  });
+  return response.data;
+}
+
 export { deleteUploadedFile };

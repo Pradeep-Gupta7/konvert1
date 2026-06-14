@@ -198,4 +198,97 @@ Provide only the ${targetLanguage} translation:`;
   }
 }
 
-module.exports = { summarizePdf, translatePdf };
+/**
+ * POST /api/ai/chat/upload
+ * Upload PDF -> extract text -> return truncated text to client (stateless)
+ */
+async function uploadForChat(req, res, next) {
+  try {
+    const file = req.file;
+    if (!file) return res.status(400).json({ error: 'Upload a PDF.' });
+
+    // Extract text from PDF
+    const pdfBytes = fs.readFileSync(file.path);
+    let textContent = '';
+    try {
+      const data = await pdfParse(pdfBytes);
+      textContent = data.text || '';
+    } catch {
+      return res.status(400).json({ error: 'Could not read text from this PDF.' });
+    }
+
+    if (!textContent.trim()) {
+      return res.status(400).json({ error: 'No readable text found in this PDF. It may be a scanned/image PDF.' });
+    }
+
+    // Limit to 50,000 characters for request payload and latency constraints
+    const maxChars = 50000;
+    const truncated = textContent.length > maxChars;
+    const parsedText = truncated ? textContent.substring(0, maxChars) : textContent;
+
+    // Cleanup uploaded file
+    try { fs.unlinkSync(file.path); } catch {}
+
+    res.json({
+      success: true,
+      text: parsedText,
+      originalLength: textContent.length,
+      truncated,
+    });
+  } catch (err) {
+    if (req.file) try { fs.unlinkSync(req.file.path); } catch {}
+    console.error('[AI Chat Upload Error]', err.message);
+    next(err);
+  }
+}
+
+/**
+ * POST /api/ai/chat/query
+ * Query Gemini model using provided context and chat history
+ */
+async function queryChat(req, res, next) {
+  try {
+    const { text, query, history } = req.body;
+    if (!text) return res.status(400).json({ error: 'No document text context provided.' });
+    if (!query) return res.status(400).json({ error: 'No query message provided.' });
+
+    const chatHistory = history || [];
+
+    const prompt = `You are "Konvert AI", a premium document assistant. You are chatting with a user about an uploaded PDF document.
+    
+Guidelines:
+- Answer the user's question accurately using ONLY or primarily the information from the PDF text below.
+- If the answer cannot be found in the PDF, use your general knowledge but make sure to clarify that it's not in the document.
+- Keep answers clear, structured, and easy to read. Use bullet points and bold formatting where appropriate.
+- Respond in the same language as the user's question. Make sure your formatting is valid markdown.
+
+PDF Document Text Content:
+"""
+${text}
+"""
+
+Conversation History:
+${chatHistory.map(h => `${h.role === 'user' ? 'User' : 'Assistant'}: ${h.content}`).join('\n')}
+
+User: ${query}
+Assistant:`;
+
+    const responseText = await generateWithRetry(prompt);
+
+    res.json({
+      success: true,
+      response: responseText,
+    });
+  } catch (err) {
+    if (err.message === 'QUOTA_EXHAUSTED') {
+      return res.status(429).json({ error: 'AI quota temporarily exceeded. Please wait 1-2 minutes and try again.' });
+    }
+    if (err.message?.includes('API_KEY') || err.message?.includes('401')) {
+      return res.status(500).json({ error: 'Invalid or missing Gemini API key. Check your .env file.' });
+    }
+    console.error('[AI Chat Query Error]', err.message);
+    next(err);
+  }
+}
+
+module.exports = { summarizePdf, translatePdf, uploadForChat, queryChat };
