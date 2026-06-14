@@ -236,7 +236,7 @@ const tools = [
         <rect x="8" y="6" width="32" height="36" rx="3" fill="white" fillOpacity="0.9"/>
         <path d="M16 16h16M16 22h12M16 28h14" stroke="#667eea" strokeWidth="2" strokeLinecap="round"/>
         <circle cx="34" cy="34" r="8" fill="#667eea"/>
-        <text x="34" y="37.5" textAnchor="middle" fontSize="10" fontWeight="bold" fill="white" fontFamily="Inter,sans-serif">✦</text>
+        <text x="34" y="37.5" textAnchor="middle" fontSize="9" fontWeight="bold" fill="white" fontFamily="Inter,sans-serif">AI</text>
       </svg>
     ),
     description: 'AI-powered summary of any PDF in seconds.',
@@ -253,7 +253,7 @@ const tools = [
         <path d="M24 20l4 0" stroke="#764ba2" strokeWidth="2" strokeLinecap="round"/>
         <text x="32" y="34" fontSize="11" fontWeight="bold" fill="#764ba2" fontFamily="Inter,sans-serif" opacity="0.7">अ</text>
         <circle cx="34" cy="34" r="8" fill="#764ba2"/>
-        <text x="34" y="37.5" textAnchor="middle" fontSize="10" fontWeight="bold" fill="white" fontFamily="Inter,sans-serif">🌐</text>
+        <text x="34" y="37.5" textAnchor="middle" fontSize="9" fontWeight="bold" fill="white" fontFamily="Inter,sans-serif">TR</text>
       </svg>
     ),
     description: 'Translate PDF content to any language using AI.',
@@ -268,7 +268,7 @@ const tools = [
         <rect x="8" y="6" width="32" height="36" rx="3" fill="white" fillOpacity="0.9"/>
         <path d="M16 16h16M16 22h10" stroke="#3b82f6" strokeWidth="2.5" strokeLinecap="round"/>
         <circle cx="34" cy="34" r="8" fill="#3b82f6"/>
-        <text x="34" y="38" textAnchor="middle" fontSize="11" fontWeight="bold" fill="white" fontFamily="Inter,sans-serif">💬</text>
+        <text x="34" y="38" textAnchor="middle" fontSize="9" fontWeight="bold" fill="white" fontFamily="Inter,sans-serif">CH</text>
       </svg>
     ),
     description: 'Ask questions, summarize, and extract insights from your PDF with AI.',
@@ -348,11 +348,11 @@ function HeroSlideshow() {
 }
 
 const categories = [
-  { id: 'all', title: 'All Tools', icon: '⚡', description: 'Access all available services in one place.' },
-  { id: 'ai', title: 'AI PDF Toolkit', icon: '✨', description: 'Leverage artificial intelligence to summarize, chat, and translate documents.' },
-  { id: 'edit', title: 'PDF & Image Editors', icon: '📝', description: 'Edit PDF text directly, or remove backgrounds and crop images in-browser.' },
-  { id: 'organize', title: 'Organize PDF', icon: '🗂️', description: 'Merge, split, compress, protect, watermark, and reorder PDF pages.' },
-  { id: 'convert', title: 'Convert PDF', icon: '🔄', description: 'Convert to and from PDF formats easily.' }
+  { id: 'all', title: 'All Tools', icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>, description: 'Access all available services in one place.' },
+  { id: 'ai', title: 'AI PDF Toolkit', icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2l3 6 6 3-6 3-3 6-3-6-6-3 6-3z"></path></svg>, description: 'Leverage artificial intelligence to summarize, chat, and translate documents.' },
+  { id: 'edit', title: 'PDF & Image Editors', icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>, description: 'Edit PDF text directly, or remove backgrounds and crop images in-browser.' },
+  { id: 'organize', title: 'Organize PDF', icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>, description: 'Merge, split, compress, protect, watermark, and reorder PDF pages.' },
+  { id: 'convert', title: 'Convert PDF', icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 2.1l4 4-4 4"></path><path d="M3 12.2v-2a4 4 0 0 1 4-4h14"></path><path d="M7 21.9l-4-4 4-4"></path><path d="M21 11.8v2a4 4 0 0 1-4 4H3"></path></svg>, description: 'Convert to and from PDF formats easily.' }
 ];
 
 export default function Home() {
@@ -469,7 +469,10 @@ export default function Home() {
       <section className="testimonials-section">
         <div className="testimonials-inner">
           <div className="testimonials-header">
-            <span className="testimonials-badge">⭐ Loved by Users</span>
+            <span className="testimonials-badge">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="#f39c12" stroke="#f39c12" strokeWidth="2" style={{marginRight: 4, display: 'inline-block', verticalAlign: 'middle'}}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              Loved by Users
+            </span>
             <h2>What People Are Saying</h2>
             <p>Join thousands of students, professionals, and teams who trust Konvert every day.</p>
           </div>
@@ -480,63 +483,65 @@ export default function Home() {
                 {
                   name: 'Rahul Sharma',
                   role: 'College Student, Delhi',
-                  avatar: '🎓',
+                  avatar: 'RS',
                   stars: 5,
                   text: 'I use Konvert almost every day for my college assignments. Merging and compressing PDFs is so fast — and completely free! No annoying sign-up required.',
                 },
                 {
                   name: 'Priya Mehta',
                   role: 'HR Manager, Mumbai',
-                  avatar: '💼',
+                  avatar: 'PM',
                   stars: 5,
                   text: 'I needed to protect confidential HR documents with a password. Konvert did it in seconds. The interface is clean and super easy to use.',
                 },
                 {
                   name: 'Arjun Verma',
                   role: 'Freelance Designer, Bangalore',
-                  avatar: '🎨',
+                  avatar: 'AV',
                   stars: 5,
                   text: 'The Image Editor feature blew me away — background removal right in the browser! I use it constantly for client work. Absolutely no other tool needed.',
                 },
                 {
                   name: 'Sneha Joshi',
                   role: 'CA Intern, Pune',
-                  avatar: '📊',
+                  avatar: 'SJ',
                   stars: 5,
                   text: 'Converting Excel reports to PDF for clients used to take me forever. With Konvert it\'s just one click. A must-have tool for finance professionals!',
                 },
                 {
                   name: 'Mohammed Aslam',
                   role: 'Teacher, Hyderabad',
-                  avatar: '📚',
+                  avatar: 'MA',
                   stars: 5,
                   text: 'I use the AI Summarizer to quickly understand long research papers. It saves me hours every week. The translation feature is incredible too!',
                 },
                 {
                   name: 'Tanvi Kapoor',
                   role: 'Law Student, Chennai',
-                  avatar: '⚖️',
+                  avatar: 'TK',
                   stars: 5,
                   text: 'Chat with PDF is a game-changer for studying case files. I ask the PDF questions and it answers! Konvert is light years ahead of other free tools.',
                 },
                 {
                   name: 'Vikram Singh',
                   role: 'Startup Founder, Noida',
-                  avatar: '🚀',
+                  avatar: 'VS',
                   stars: 5,
                   text: 'My whole team switched to Konvert. We watermark all our proposals and split reports for clients. Privacy is top-notch — files are deleted automatically.',
                 },
                 {
                   name: 'Ananya Das',
                   role: 'Content Writer, Kolkata',
-                  avatar: '✍️',
+                  avatar: 'AD',
                   stars: 5,
                   text: 'The PDF to Word conversion is spot-on. Formatting stays intact and I can edit documents immediately. 10x better than any other converter I\'ve tried!',
                 },
               ].map((t, i) => (
                 <div className="testimonial-card" key={i}>
                   <div className="testimonial-stars">
-                    {'⭐'.repeat(t.stars)}
+                    {Array.from({ length: t.stars }).map((_, idx) => (
+                      <svg key={idx} width="16" height="16" viewBox="0 0 24 24" fill="#f39c12" stroke="#f39c12" strokeWidth="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                    ))}
                   </div>
                   <p className="testimonial-text">"{t.text}"</p>
                   <div className="testimonial-author">
@@ -553,63 +558,65 @@ export default function Home() {
                 {
                   name: 'Rahul Sharma',
                   role: 'College Student, Delhi',
-                  avatar: '🎓',
+                  avatar: 'RS',
                   stars: 5,
                   text: 'I use Konvert almost every day for my college assignments. Merging and compressing PDFs is so fast — and completely free! No annoying sign-up required.',
                 },
                 {
                   name: 'Priya Mehta',
                   role: 'HR Manager, Mumbai',
-                  avatar: '💼',
+                  avatar: 'PM',
                   stars: 5,
                   text: 'I needed to protect confidential HR documents with a password. Konvert did it in seconds. The interface is clean and super easy to use.',
                 },
                 {
                   name: 'Arjun Verma',
                   role: 'Freelance Designer, Bangalore',
-                  avatar: '🎨',
+                  avatar: 'AV',
                   stars: 5,
                   text: 'The Image Editor feature blew me away — background removal right in the browser! I use it constantly for client work. Absolutely no other tool needed.',
                 },
                 {
                   name: 'Sneha Joshi',
                   role: 'CA Intern, Pune',
-                  avatar: '📊',
+                  avatar: 'SJ',
                   stars: 5,
                   text: 'Converting Excel reports to PDF for clients used to take me forever. With Konvert it\'s just one click. A must-have tool for finance professionals!',
                 },
                 {
                   name: 'Mohammed Aslam',
                   role: 'Teacher, Hyderabad',
-                  avatar: '📚',
+                  avatar: 'MA',
                   stars: 5,
                   text: 'I use the AI Summarizer to quickly understand long research papers. It saves me hours every week. The translation feature is incredible too!',
                 },
                 {
                   name: 'Tanvi Kapoor',
                   role: 'Law Student, Chennai',
-                  avatar: '⚖️',
+                  avatar: 'TK',
                   stars: 5,
                   text: 'Chat with PDF is a game-changer for studying case files. I ask the PDF questions and it answers! Konvert is light years ahead of other free tools.',
                 },
                 {
                   name: 'Vikram Singh',
                   role: 'Startup Founder, Noida',
-                  avatar: '🚀',
+                  avatar: 'VS',
                   stars: 5,
                   text: 'My whole team switched to Konvert. We watermark all our proposals and split reports for clients. Privacy is top-notch — files are deleted automatically.',
                 },
                 {
                   name: 'Ananya Das',
                   role: 'Content Writer, Kolkata',
-                  avatar: '✍️',
+                  avatar: 'AD',
                   stars: 5,
                   text: 'The PDF to Word conversion is spot-on. Formatting stays intact and I can edit documents immediately. 10x better than any other converter I\'ve tried!',
                 },
               ].map((t, i) => (
                 <div className="testimonial-card" key={`dup-${i}`} aria-hidden="true">
                   <div className="testimonial-stars">
-                    {'⭐'.repeat(t.stars)}
+                    {Array.from({ length: t.stars }).map((_, idx) => (
+                      <svg key={idx} width="16" height="16" viewBox="0 0 24 24" fill="#f39c12" stroke="#f39c12" strokeWidth="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                    ))}
                   </div>
                   <p className="testimonial-text">"{t.text}"</p>
                   <div className="testimonial-author">
@@ -631,21 +638,21 @@ export default function Home() {
       <section className="feature-banner">
         <div className="feature-banner-inner">
           <div className="feature-item">
-            <span className="feature-icon">🔒</span>
+            <span className="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></span>
             <div>
               <strong>Secure &amp; Private</strong>
               <p>Files are processed locally and deleted after download.</p>
             </div>
           </div>
           <div className="feature-item">
-            <span className="feature-icon">⚡</span>
+            <span className="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg></span>
             <div>
               <strong>Fast Processing</strong>
               <p>High-performance Node.js backend for instant results.</p>
             </div>
           </div>
           <div className="feature-item">
-            <span className="feature-icon">🆓</span>
+            <span className="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg></span>
             <div>
               <strong>Always Free</strong>
               <p>All tools are completely free, no account required.</p>

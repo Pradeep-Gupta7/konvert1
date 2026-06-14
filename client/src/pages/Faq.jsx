@@ -6,7 +6,7 @@ import './Faq.css';
 const FAQ_DATA = [
   {
     category: 'General',
-    icon: '💡',
+    icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>,
     questions: [
       {
         q: 'What is Konvert?',
@@ -28,7 +28,7 @@ const FAQ_DATA = [
   },
   {
     category: 'Privacy & Security',
-    icon: '🔒',
+    icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>,
     questions: [
       {
         q: 'Are my uploaded files secure?',
@@ -50,7 +50,7 @@ const FAQ_DATA = [
   },
   {
     category: 'PDF Tools',
-    icon: '📄',
+    icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>,
     questions: [
       {
         q: 'How do I merge multiple PDFs into one?',
@@ -80,7 +80,7 @@ const FAQ_DATA = [
   },
   {
     category: 'File Conversion',
-    icon: '🔄',
+    icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 2.1l4 4-4 4"></path><path d="M3 12.2v-2a4 4 0 0 1 4-4h14"></path><path d="M7 21.9l-4-4 4-4"></path><path d="M21 11.8v2a4 4 0 0 1-4 4H3"></path></svg>,
     questions: [
       {
         q: 'Can I convert a PDF to a Word document?',
@@ -106,7 +106,7 @@ const FAQ_DATA = [
   },
   {
     category: 'AI Features',
-    icon: '✨',
+    icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2l3 6 6 3-6 3-3 6-3-6-6-3 6-3z"></path></svg>,
     questions: [
       {
         q: 'What AI features does Konvert offer?',
@@ -128,7 +128,7 @@ const FAQ_DATA = [
   },
   {
     category: 'Image Editor',
-    icon: '🖼️',
+    icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>,
     questions: [
       {
         q: 'What can I do with the Image Editor?',
@@ -142,7 +142,7 @@ const FAQ_DATA = [
   },
   {
     category: 'Troubleshooting',
-    icon: '🛠️',
+    icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>,
     questions: [
       {
         q: 'My file upload seems stuck or slow. What should I do?',
@@ -257,8 +257,8 @@ export default function Faq() {
               onClick={() => setActiveCategory(cat)}
             >
               {cat === 'All'
-                ? '⚡ All Topics'
-                : `${FAQ_DATA.find((c) => c.category === cat)?.icon} ${cat}`}
+                ? <><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{marginRight: 6, verticalAlign: 'middle'}}><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg> All Topics</>
+                : <><span style={{marginRight: 6, display: 'inline-flex', verticalAlign: 'middle'}}>{FAQ_DATA.find((c) => c.category === cat)?.icon}</span> {cat}</>}
             </button>
           ))}
         </div>
@@ -269,7 +269,7 @@ export default function Faq() {
         <div className="faq-content-inner">
           {filteredData.length === 0 ? (
             <div className="faq-no-results">
-              <div className="faq-no-results-icon">🔍</div>
+              <div className="faq-no-results-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></div>
               <h3>No results found</h3>
               <p>Try different keywords or browse all categories.</p>
               <button
@@ -359,7 +359,7 @@ export default function Faq() {
       {/* Still Need Help CTA */}
       <section className="faq-cta-section">
         <div className="faq-cta-card">
-          <div className="faq-cta-icon">💬</div>
+          <div className="faq-cta-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></div>
           <h2>Still have a question?</h2>
           <p>
             Our co-founders personally respond to every message. Average reply
@@ -373,7 +373,7 @@ export default function Faq() {
               href="mailto:konvert.dev@gmail.com"
               className="faq-cta-btn secondary"
             >
-              ✉️ konvert.dev@gmail.com
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{marginRight: 8}}><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg> konvert.dev@gmail.com
             </a>
           </div>
         </div>
