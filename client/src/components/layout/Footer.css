@@ -146,8 +146,8 @@
 }
 
 .footer-cat-title {
-  font-size: 0.8rem;
-  font-weight: 700;
+  font-size: 0.95rem;
+  font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.8px;
   color: #fff;
@@ -166,8 +166,9 @@
 
 /* Individual link */
 .footer-tool-link {
-  font-size: 0.83rem;
-  color: #64748b;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: #94a3b8;
   text-decoration: none;
   transition: color 0.18s;
   white-space: nowrap;
